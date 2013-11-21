@@ -310,6 +310,22 @@
        <number>10</number>
       </property>
       <item row="1" column="1">
+       <widget class="QProgressBar" name="imageProgressBar">
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>true</bool>
+        </property>
+        <property name="format">
+         <string>%p%</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
        <widget class="QProgressBar" name="totalProgressBar">
         <property name="enabled">
          <bool>true</bool>
@@ -334,33 +350,31 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QProgressBar" name="imageProgressBar">
-        <property name="maximum">
-         <number>10000</number>
-        </property>
-        <property name="value">
-         <number>0</number>
-        </property>
-        <property name="textVisible">
-         <bool>true</bool>
-        </property>
-        <property name="format">
-         <string>%p%</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <widget class="QLabel" name="label_18">
         <property name="text">
          <string>Total Progress:</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
+      <item row="1" column="0">
        <widget class="QLabel" name="label_17">
         <property name="text">
          <string>Current Slice:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QProgressBar" name="chunkProgressBar">
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Chunk Chache:</string>
         </property>
        </widget>
       </item>
@@ -390,6 +404,16 @@
          </size>
         </property>
        </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="abortButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Abort</string>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QPushButton" name="closeButton">

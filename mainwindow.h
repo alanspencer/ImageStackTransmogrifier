@@ -38,9 +38,12 @@ private:
     };
 
     int getCountDirectoryFiles(QDir directory);
-    QList<QString> getImageStackFileList(QDir directory);
+    void getImageStackFileList(QDir directory);
     QString getAvailableFormatsStr();
-    void transmogrifierLoadOneCopyRow();
+    //void transmogrifierLoadOneCopyRow();
+    void transmogrifierLoadChunkCopyRows();
+    void xLoadChunk(int xChunkStart, int xChunkEnd);
+    void runX0toXnLoop(int xChunkStart, int xChunkEnd);
 
     QString inputFromFilename;
     QDir inputFromDirectory;
@@ -55,6 +58,9 @@ private:
     bool inputFromOK;
     bool outputToOK;
     int processorCount;
+    int chunkSize;
+    QList< QList<QRgb> > chunkCacheList;
+    int currentTotalNumber;
 
 private slots:
     void inputFromAction();

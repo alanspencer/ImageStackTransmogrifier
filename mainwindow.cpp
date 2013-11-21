@@ -45,6 +45,9 @@ void MainWindow::reset()
     inputFromDirectory = NULL;
     imageFormat = QImage::Format_Invalid;
     imageFormatText = "";
+    chunkSize = 100;
+    chunkCacheList.clear();
+    currentTotalNumber = 0;
 
     ui->inputFrom->setText("");
     ui->outputTo->setText("");
@@ -67,12 +70,11 @@ void MainWindow::reset()
     ui->directionYntoY0->setEnabled(true);
     ui->outputToButton->setEnabled(true);
     ui->runButton->setEnabled(false);
+    ui->abortButton->setEnabled(false);
 
-    ui->totalProgressBar->reset();
-    ui->totalProgressBar->setMaximum(100);
-
-    ui->imageProgressBar->reset();
-    ui->imageProgressBar->setMaximum(100);
+    ui->totalProgressBar->setValue(0);
+    ui->imageProgressBar->setValue(0);
+    ui->chunkProgressBar->setValue(0);
 }
 
 void MainWindow::inputFromAction()
@@ -140,7 +142,7 @@ void MainWindow::inputFromAction()
             ui->imageHeight->setText(QString("%1 px").arg(imageHeight));
 
             // Build list of all files
-            imageStackFiles = getImageStackFileList(inputFromDirectory);
+            getImageStackFileList(inputFromDirectory);
             ui->selectedStackFiles->setRowCount(imageStackFiles.count());
             for(int i = 0; i < imageStackFiles.count(); i++)
             {
@@ -185,7 +187,7 @@ void MainWindow::outputToAction()
                 this,
                 tr("Output Directory"),
                 "",
-                QFileDialog::ShowDirsOnly| QFileDialog::DontResolveSymlinks
+                QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks
                 );
     if (!outputToDirectory.isEmpty()) {
         outputToOK = true;
@@ -208,13 +210,181 @@ void MainWindow::runAction()
     ui->directionYntoY0->setEnabled(false);
     ui->outputToButton->setEnabled(false);
     ui->runButton->setEnabled(false);
+    ui->abortButton->setEnabled(true);
 
-    transmogrifierLoadOneCopyRow();
+    //transmogrifierLoadOneCopyRow();
+    transmogrifierLoadChunkCopyRows();
 
     reset();
 }
 
-void MainWindow::transmogrifierLoadOneCopyRow()
+void MainWindow::transmogrifierLoadChunkCopyRows()
+{
+    currentTotalNumber = 0;
+
+    if (selectedDirection == X0toXn) {
+        ui->totalProgressBar->setMaximum(imageWidth);
+
+        int xChunkStart = 0;
+        int xChunkEnd = chunkSize;
+        int numChunks = imageWidth/chunkSize;
+        int remainderChunks = imageWidth-(numChunks*chunkSize);
+
+        // Do chunks...
+        for(int n = 0; n < numChunks; n++)  // loop #0
+        {
+            xLoadChunk(xChunkStart, xChunkEnd);
+            runX0toXnLoop(xChunkStart, xChunkEnd);
+            xChunkStart = xChunkEnd;
+            xChunkEnd = xChunkEnd+chunkSize;
+        }
+
+        // Do remainder chunks...
+        if (remainderChunks > 0) {
+            xChunkStart = imageWidth-remainderChunks;
+            xChunkEnd = imageWidth;
+            xLoadChunk(xChunkStart, xChunkEnd);
+            runX0toXnLoop(xChunkStart, xChunkEnd);
+        }
+
+    } else if (selectedDirection == XntoX0) {
+        // TO DO... same as above but in reserve order
+
+    } else if (selectedDirection == Y0toYn) {
+        // TO DO... same as X0toXn but with x and y reversed
+
+    } else if (selectedDirection == YntoY0) {
+        // TO DO... same as above but in reserve order
+
+    }
+}
+
+void MainWindow::xLoadChunk(int xChunkStart, int xChunkEnd)
+{
+    chunkCacheList.clear();
+
+    qDebug() << "Loading Chunks " << xChunkStart << "to" << xChunkEnd << "...";
+
+    int currentChunkProgress = 0;
+    ui->chunkProgressBar->setValue(currentChunkProgress);
+    ui->chunkProgressBar->setMaximum(imageStackFiles.count());
+
+    for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
+    {
+        // Open Image z for reading
+        QImage image = QImage(inputFromDirectory.absolutePath()+"/"+imageStackFiles[z]);
+        bool breakOuterLoop = false;
+
+        for(int x = xChunkStart;  x < xChunkEnd; x++)  // loop #1 - get rows
+        {
+            if (x > imageWidth) {
+                breakOuterLoop = true;
+                break;
+            }
+
+            // Save desired chuck
+            QList<QRgb> columnData;
+            for(int y = 0; y < imageHeight; y++) // loop #3 - gets columns
+            {
+                columnData.append(image.pixel(x, y));
+            }
+            chunkCacheList.append(columnData);
+        }
+        qDebug() << "Chunk " << xChunkStart << "to" << xChunkEnd << " for slice " << z << "loaded.";
+
+        if (breakOuterLoop) {
+            break;
+        }
+
+        currentChunkProgress++;
+        ui->chunkProgressBar->setValue(currentChunkProgress);
+    }
+}
+
+void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
+{
+    qDebug() << "Creating Slices  from Chunks " << xChunkStart << "to" << xChunkEnd << "...";
+
+    // Current x value for reading
+    for(int x = xChunkStart; x < xChunkEnd; x++)  // loop #1
+    {
+        // Create new .bmp file to write to
+        QImage newImage(imageHeight,imageStackFiles.count(), imageFormat);
+        QList<QRgb> colorTable;
+        int currentProgress = 0;
+
+        ui->imageProgressBar->setValue(currentProgress);
+        ui->imageProgressBar->setMaximum(imageStackFiles.count());
+
+        // Slice to read from
+        for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
+        {
+            // Get Image data from chache...
+
+            // Pixel color to read an copy to new image
+            for(int y = 0; y < imageHeight; y++) // loop #3
+            {
+                QRgb currentPixelColor = chunkCacheList[z][y];
+
+                // 8-bit Images
+                if (imageFormat == QImage::Format_Indexed8){
+                    // Check if pixel color is already in the new color table
+                    bool found = false;
+                    for(int c = 0; c < colorTable.size(); c++)
+                    {
+                        if (colorTable[c] == currentPixelColor) {
+                            newImage.setPixel(y, z, c);
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        int value = colorTable.size();
+                        colorTable.append(currentPixelColor);
+                        newImage.setColor(value, currentPixelColor);
+                        newImage.setPixel(y, z, value);
+                    }
+                }
+                // 32-bit Images
+                else if (imageFormat == QImage::Format_RGB32 || QImage::Format_ARGB32 || QImage::Format_ARGB32_Premultiplied) {
+                    newImage.setPixel(y, z, currentPixelColor);
+                }
+            } // end loop #3
+
+            // Update Image Progress Bar
+            currentProgress++;
+            ui->imageProgressBar->setValue(currentProgress);
+            qApp->processEvents();
+
+        } // end loop #2
+
+
+        // New Filename
+        QString filename = QString("%1").arg(currentTotalNumber);
+        if(filename.size() == 1) {
+            filename.prepend("000");
+        } else if (filename.size() == 2) {
+            filename.prepend("00");
+        } else if (filename.size() == 3) {
+            filename.prepend("0");
+        }
+        filename.append(".bmp");
+
+        // Save new file
+        newImage.save(
+                    outputToDirectory+"/"+filename,
+                    "BMP"
+                    );
+
+        // Update Total Progress Bar
+        currentTotalNumber++;
+        qDebug() << "Created Slice " << currentTotalNumber << "from Chunk.";
+        ui->totalProgressBar->setValue(currentTotalNumber);
+        qApp->processEvents();
+    } // end loop #1
+}
+
+/*void MainWindow::transmogrifierLoadOneCopyRow()
 {
     int currentImageNumber = 0;
 
@@ -226,20 +396,18 @@ void MainWindow::transmogrifierLoadOneCopyRow()
         {
 
             // Create new .bmp file to write to
-            QImage newImage(imageHeight,imageStackFiles.count(),imageFormat);
+            QImage newImage(imageHeight, imageStackFiles.count(), imageFormat);
             QVector<QRgb> colorTable;
-            int imageStackFilesNum = imageStackFiles.count();
             int currentProgress = 0;
 
             ui->imageProgressBar->setValue(currentProgress);
-            ui->imageProgressBar->setMaximum(imageStackFilesNum);
+            ui->imageProgressBar->setMaximum(imageStackFiles.count());
 
             // Slice to read from
-            for (int z = 0; z < imageStackFilesNum; z++) // loop #2
+            for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
             {
                 // Open Image z for reading
-                QImageReader readImage(inputFromDirectory.absolutePath()+"/"+imageStackFiles[z]);
-                QImage image = readImage.read();
+                QImage image = QImage(inputFromDirectory.absolutePath()+"/"+imageStackFiles[z]);
 
                 // Pixel color to read an copy to new image
                 for(int y = 0; y < imageHeight; y++) // loop #3
@@ -313,7 +481,7 @@ void MainWindow::transmogrifierLoadOneCopyRow()
         // TO DO... same as above but in reserve order
 
     }
-}
+}*/
 
 void MainWindow::resetAction()
 {
@@ -336,15 +504,13 @@ int MainWindow::getCountDirectoryFiles(QDir directory)
 }
 
 
-QList<QString> MainWindow::getImageStackFileList(QDir directory)
+void MainWindow::getImageStackFileList(QDir directory)
 {
-    QList<QString> foundFileList;
     directory.setFilter(QDir::Files);
     for(int i = 0; i < directory.entryInfoList().size(); i++)
     {
-        foundFileList.append(directory.entryInfoList()[i].fileName());
+        imageStackFiles.append(directory.entryInfoList()[i].fileName());
     }
-    return foundFileList;
 }
 
 QString MainWindow::getAvailableFormatsStr()
