@@ -210,23 +210,6 @@
       <property name="topMargin">
        <number>0</number>
       </property>
-      <item row="1" column="3">
-       <widget class="QRadioButton" name="directionY0toYn">
-        <property name="text">
-         <string>Y0 to Yn</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QRadioButton" name="directionX0toXn">
-        <property name="text">
-         <string>X0 to Xn</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
@@ -234,17 +217,27 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QRadioButton" name="directionXntoX0">
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>Xn to X0</string>
+         <string>Cache Chunk Size:</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="4">
-       <widget class="QRadioButton" name="directionYntoY0">
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="useCache">
         <property name="text">
-         <string>Yn to Y0</string>
+         <string>(recommended)</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>Use Cache:</string>
         </property>
        </widget>
       </item>
@@ -264,27 +257,34 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_16">
+      <item row="1" column="2">
+       <widget class="QRadioButton" name="directionXntoX0">
         <property name="text">
-         <string>Cache Chunk Size:</string>
+         <string>Xn to X0</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_19">
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="directionX0toXn">
         <property name="text">
-         <string>Use Cache:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QCheckBox" name="useCache">
-        <property name="text">
-         <string>(recommended)</string>
+         <string>X0 to Xn</string>
         </property>
         <property name="checked">
          <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QRadioButton" name="directionY0toYn">
+        <property name="text">
+         <string>Y0 to Yn</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QRadioButton" name="directionYntoY0">
+        <property name="text">
+         <string>Yn to Y0</string>
         </property>
        </widget>
       </item>
@@ -356,7 +356,7 @@
     <item>
      <layout class="QGridLayout" name="gridLayout_5">
       <property name="topMargin">
-       <number>10</number>
+       <number>0</number>
       </property>
       <item row="1" column="1">
        <widget class="QProgressBar" name="imageProgressBar">

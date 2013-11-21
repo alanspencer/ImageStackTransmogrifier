@@ -286,6 +286,9 @@ void MainWindow::xLoadChunk(int xChunkStart, int xChunkEnd)
     ui->chunkProgressBar->setValue(currentChunkProgress);
     ui->chunkProgressBar->setMaximum(imageStackFiles.count());
 
+    QList< QList<QRgb> > sliceData;
+    QList<QRgb> columnData;
+
     for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
     {
         // Open Image z for reading
@@ -299,14 +302,17 @@ void MainWindow::xLoadChunk(int xChunkStart, int xChunkEnd)
                 break;
             }
 
-            // Save desired chuck
-            QList<QRgb> columnData;
+            // Save desired chuck           
             for(int y = 0; y < imageHeight; y++) // loop #3 - gets columns
             {
                 columnData.append(image.pixel(x, y));
             }
-            chunkCacheList.append(columnData);
+            sliceData.append(columnData);
+            columnData.clear();
         }
+        chunkCacheList.append(sliceData);
+        sliceData.clear();
+
         qDebug() << "Chunk " << xChunkStart << "to" << xChunkEnd << " for slice " << z << "loaded.";
 
         if (breakOuterLoop) {
@@ -323,6 +329,7 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
     qDebug() << "Creating Slices  from Chunks " << xChunkStart << "to" << xChunkEnd << "...";
 
     // Current x value for reading
+    int xList = 0;
     for(int x = xChunkStart; x < xChunkEnd; x++)  // loop #1
     {
         // Create new .bmp file to write to
@@ -336,12 +343,11 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
         // Slice to read from
         for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
         {
-            // Get Image data from chache...
 
             // Pixel color to read an copy to new image
             for(int y = 0; y < imageHeight; y++) // loop #3
             {
-                QRgb currentPixelColor = chunkCacheList[z][y];
+                QRgb currentPixelColor = chunkCacheList[z][xList][y];
 
                 // 8-bit Images
                 if (imageFormat == QImage::Format_Indexed8){
@@ -374,7 +380,7 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
             qApp->processEvents();
 
         } // end loop #2
-
+        xList++;
 
         // New Filename
         QString filename = QString("%1").arg(currentTotalNumber);

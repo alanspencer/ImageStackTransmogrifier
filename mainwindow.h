@@ -60,7 +60,7 @@ private:
     bool outputToOK;
     int processorCount;
     int chunkSize;
-    QList< QList<QRgb> > chunkCacheList;
+    QList< QList < QList<QRgb> > > chunkCacheList; // list[{z}][{x}/{y}][{y pixel data}/{x pixel data}]
     int currentTotalNumber;
     bool isRunning;
 
