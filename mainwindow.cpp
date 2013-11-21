@@ -25,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->outputToButton, SIGNAL(clicked()), this, SLOT(outputToAction()));
     connect(this, SIGNAL(dataChanged()), this, SLOT(checkRunButton()));
     connect(ui->runButton, SIGNAL(clicked()), this, SLOT(runAction()));
+    connect(ui->abortButton, SIGNAL(clicked()), this, SLOT(abortAction()));
     connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetAction()));
 }
 
@@ -48,6 +49,7 @@ void MainWindow::reset()
     chunkSize = 100;
     chunkCacheList.clear();
     currentTotalNumber = 0;
+    isRunning = false;
 
     ui->inputFrom->setText("");
     ui->outputTo->setText("");
@@ -63,6 +65,9 @@ void MainWindow::reset()
     ui->selectedStackFiles->setRowCount(0);
     imageStackFiles.clear();
 
+    ui->useCache->setChecked(true);
+    ui->cacheChuckSize->setValue(50);
+
     ui->inputFromButton->setEnabled(true);
     ui->directionX0toXn->setEnabled(true);
     ui->directionXntoX0->setEnabled(true);
@@ -71,6 +76,9 @@ void MainWindow::reset()
     ui->outputToButton->setEnabled(true);
     ui->runButton->setEnabled(false);
     ui->abortButton->setEnabled(false);
+    ui->closeButton->setEnabled(true);
+    ui->resetButton->setEnabled(true);
+    ui->aboutButton->setEnabled(true);
 
     ui->totalProgressBar->setValue(0);
     ui->imageProgressBar->setValue(0);
@@ -211,10 +219,19 @@ void MainWindow::runAction()
     ui->outputToButton->setEnabled(false);
     ui->runButton->setEnabled(false);
     ui->abortButton->setEnabled(true);
-
-    //transmogrifierLoadOneCopyRow();
-    transmogrifierLoadChunkCopyRows();
-
+    ui->closeButton->setEnabled(false);
+    ui->resetButton->setEnabled(false);
+    ui->aboutButton->setEnabled(false);
+    isRunning = true;
+    while(isRunning) {
+        if (!isCacheEnabled()) {
+            transmogrifierLoadOneCopyRow();
+        } else {
+            chunkSize = ui->cacheChuckSize->value();
+            transmogrifierLoadChunkCopyRows();
+        }
+        isRunning = false;
+    }
     reset();
 }
 
@@ -384,7 +401,7 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
     } // end loop #1
 }
 
-/*void MainWindow::transmogrifierLoadOneCopyRow()
+void MainWindow::transmogrifierLoadOneCopyRow()
 {
     int currentImageNumber = 0;
 
@@ -481,7 +498,12 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
         // TO DO... same as above but in reserve order
 
     }
-}*/
+}
+
+void MainWindow::abortAction()
+{
+    isRunning = false;
+}
 
 void MainWindow::resetAction()
 {
@@ -523,4 +545,9 @@ QString MainWindow::getAvailableFormatsStr()
         availableFormats += "; ";
     }
     return availableFormats;
+}
+
+bool MainWindow::isCacheEnabled()
+{
+    return ui->useCache->isChecked();
 }
