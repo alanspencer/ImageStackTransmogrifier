@@ -40,7 +40,7 @@ private:
     int getCountDirectoryFiles(QDir directory);
     QList<QString> getImageStackFileList(QDir directory);
     QString getAvailableFormatsStr();
-    int iteratePixelsX0toXn(QString imagefile, int xVal, int yStart, int yEnd, int z);
+    void transmogrifierLoadOneCopyRow();
 
     QString inputFromFilename;
     QDir inputFromDirectory;

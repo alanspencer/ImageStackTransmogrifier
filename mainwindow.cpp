@@ -209,12 +209,20 @@ void MainWindow::runAction()
     ui->outputToButton->setEnabled(false);
     ui->runButton->setEnabled(false);
 
+    transmogrifierLoadOneCopyRow();
+
+    reset();
+}
+
+void MainWindow::transmogrifierLoadOneCopyRow()
+{
     int currentImageNumber = 0;
 
     if (selectedDirection == X0toXn) {
         ui->totalProgressBar->setMaximum(imageWidth);
 
-        for(int x = 0; x < imageWidth; x++) // Current x value for reading
+        // Current x value for reading
+        for(int x = 0; x < imageWidth; x++)  // loop #1
         {
 
             // Create new .bmp file to write to
@@ -226,13 +234,15 @@ void MainWindow::runAction()
             ui->imageProgressBar->setValue(currentProgress);
             ui->imageProgressBar->setMaximum(imageStackFilesNum);
 
-            for (int z = 0; z < imageStackFilesNum; z++) // Slice to read from
+            // Slice to read from
+            for (int z = 0; z < imageStackFilesNum; z++) // loop #2
             {
                 // Open Image z for reading
                 QImageReader readImage(inputFromDirectory.absolutePath()+"/"+imageStackFiles[z]);
                 QImage image = readImage.read();
 
-                for(int y = 0; y < imageHeight; y++) // Pixel Color to read
+                // Pixel color to read an copy to new image
+                for(int y = 0; y < imageHeight; y++) // loop #3
                 {
                     QRgb currentPixelColor = image.pixel(x, y);
 
@@ -259,12 +269,14 @@ void MainWindow::runAction()
                     else if (imageFormat == QImage::Format_RGB32 || QImage::Format_ARGB32 || QImage::Format_ARGB32_Premultiplied) {
                         newImage.setPixel(y, z, currentPixelColor);
                     }
-                }
+                } // end loop #3
 
+                // Update Image Progress Bar
                 currentProgress++;
                 ui->imageProgressBar->setValue(currentProgress);
                 qApp->processEvents();
-            }
+
+            } // end loop #2
 
 
             // New Filename
@@ -284,15 +296,21 @@ void MainWindow::runAction()
                         "BMP"
                         );
 
+            // Update Total Progress Bar
             currentImageNumber++;
             ui->totalProgressBar->setValue(currentImageNumber);
             qApp->processEvents();
-        }
+
+        } // end loop #1
+
     } else if (selectedDirection == XntoX0) {
+        // TO DO... same as above but in reserve order
 
     } else if (selectedDirection == Y0toYn) {
+        // TO DO... same as X0toXn but with x and y reversed
 
     } else if (selectedDirection == YntoY0) {
+        // TO DO... same as above but in reserve order
 
     }
 }
