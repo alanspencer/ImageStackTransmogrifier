@@ -22,3 +22,9 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
+
+# The application version
+VERSION = 0.1
+
+# Define the preprocessor macro to get the application version in our application.
+DEFINES += APP_VERSION=$$VERSION

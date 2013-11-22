@@ -74,6 +74,7 @@ private slots:
     void runAction();
     void abortAction();
     void resetAction();
+    void aboutAction();
     void checkRunButton();
 
 signals:

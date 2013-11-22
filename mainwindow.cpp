@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->runButton, SIGNAL(clicked()), this, SLOT(runAction()));
     connect(ui->abortButton, SIGNAL(clicked()), this, SLOT(abortAction()));
     connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetAction()));
+    connect(ui->aboutButton, SIGNAL(clicked()), this, SLOT(aboutAction()));
 }
 
 MainWindow::~MainWindow()
@@ -514,6 +515,24 @@ void MainWindow::abortAction()
 void MainWindow::resetAction()
 {
     reset();
+}
+
+void MainWindow::aboutAction()
+{
+    QMessageBox msgBox;
+    QSpacerItem* horizontalSpacer = new QSpacerItem(600, 0, QSizePolicy::Minimum, QSizePolicy::Expanding);
+    msgBox.setWindowTitle(tr("About Image Stack Transmogrifier"));
+    msgBox.setTextFormat(Qt::RichText);
+    msgBox.setText(
+                tr("<b>Image Stack Transmogrifier</b> is a program to create a new image stack at 90 degrees (either along the x or y axis) from a pre-exsisting (numerically named) image stack.")
+                +"<br><br>"
+                +tr("Image Stack Transmogrifier Version: v%1").arg( QString::number(APP_VERSION, 'f', 1) )
+                +"<br><br>"
+                +tr("Created by: %1").arg("Alan R.T. Spencer")
+                );
+    QGridLayout* layout = (QGridLayout*)msgBox.layout();
+    layout->addItem(horizontalSpacer, layout->rowCount(), 0, 1, layout->columnCount());
+    msgBox.exec();
 }
 
 void MainWindow::checkRunButton()
