@@ -15,6 +15,13 @@ MainWindow::MainWindow(QWidget *parent) :
     selectedDirection = X0toXn;
     reset();
 
+    // Create grayscale color table
+    for(int c = 0; c < 255; c++)
+    {
+        colorTableGray.append(QColor(c,c,c).rgb());
+    }
+
+
     ui->supportedImageFormats->setText(getAvailableFormatsStr());
 
     connect(ui->inputFromButton, SIGNAL(clicked()), this, SLOT(inputFromAction()));
@@ -22,6 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->directionXntoX0, SIGNAL(clicked()), this, SLOT(setDirectionXntoX0()));
     connect(ui->directionY0toYn, SIGNAL(clicked()), this, SLOT(setDirectionY0toYn()));
     connect(ui->directionYntoY0, SIGNAL(clicked()), this, SLOT(setDirectionYntoY0()));
+    connect(ui->outputFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(setOutputFormat(int)));
     connect(ui->outputToButton, SIGNAL(clicked()), this, SLOT(outputToAction()));
     connect(this, SIGNAL(dataChanged()), this, SLOT(checkRunButton()));
     connect(ui->runButton, SIGNAL(clicked()), this, SLOT(runAction()));
@@ -47,10 +55,12 @@ void MainWindow::reset()
     inputFromDirectory = NULL;
     imageFormat = QImage::Format_Invalid;
     imageFormatText = "";
+    outputFormat = BMPFormat;
     chunkSize = 100;
     chunkCacheList.clear();
     currentTotalNumber = 0;
     isRunning = false;
+    isGrayScale = false;
 
     ui->inputFrom->setText("");
     ui->outputTo->setText("");
@@ -144,6 +154,14 @@ void MainWindow::inputFromAction()
                 imageFormatText = "Undefined";
             }
 
+            if (imageFormat == QImage::Format_Indexed8) {
+                isGrayScale = image.read().allGray();
+                imageFormatText += " (Grayscale)";
+            } else if (QImage::Format_RGB32 || QImage::Format_ARGB32 || QImage::Format_ARGB32_Premultiplied) {
+                isGrayScale = image.read().isGrayscale();
+                imageFormatText += " (Grayscale)";
+            }
+
             // Update GUI
             ui->imageFormat->setText(imageFormatText);
 
@@ -188,6 +206,50 @@ void MainWindow::setDirectionY0toYn()
 void MainWindow::setDirectionYntoY0()
 {
     selectedDirection = YntoY0;
+}
+
+void MainWindow::setOutputFormat(int index)
+{
+   QString selected =  ui->outputFormat->itemText(index);
+
+   if (selected == "BMP") {
+       outputFormat = BMPFormat;
+   } else if (selected == "JPEG") {
+       outputFormat = JPEGFormat;
+   } else if (selected == "TIFF") {
+       outputFormat = TIFFFormat;
+   } else if (selected == "PNG") {
+       outputFormat = PNGFormat;
+   }
+}
+
+
+const char* MainWindow::getOutputFormat() {
+    if (outputFormat == BMPFormat) {
+        return "BMP";
+    } else if (outputFormat == JPEGFormat) {
+        return "JPEG";
+    } else if (outputFormat == TIFFFormat) {
+        return "TIFF";
+    } else if (outputFormat == PNGFormat) {
+        return "PNG";
+    } else {
+        return "BMP";
+    }
+}
+
+const char* MainWindow::getOutputExtension() {
+    if (outputFormat == BMPFormat) {
+        return ".bmp";
+    } else if (outputFormat == JPEGFormat) {
+        return ".jpeg";
+    } else if (outputFormat == TIFFFormat) {
+        return ".tiff";
+    } else if (outputFormat == PNGFormat) {
+        return ".png";
+    } else {
+        return ".bmp";
+    }
 }
 
 void MainWindow::outputToAction()
@@ -333,18 +395,22 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
     int xList = 0;
     for(int x = xChunkStart; x < xChunkEnd; x++)  // loop #1
     {
-        // Create new .bmp file to write to
+        // Create new file to write to
         QImage newImage(imageHeight,imageStackFiles.count(), imageFormat);
-        QList<QRgb> colorTable;
+        colorTable.clear();
         int currentProgress = 0;
 
         ui->imageProgressBar->setValue(currentProgress);
         ui->imageProgressBar->setMaximum(imageStackFiles.count());
 
+        if (isGrayScale && imageFormat == QImage::Format_Indexed8) {
+            colorTable = colorTableGray;
+            newImage.setColorTable(colorTable);
+        }
+
         // Slice to read from
         for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
         {
-
             // Pixel color to read an copy to new image
             for(int y = 0; y < imageHeight; y++) // loop #3
             {
@@ -392,12 +458,12 @@ void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
         } else if (filename.size() == 3) {
             filename.prepend("0");
         }
-        filename.append(".bmp");
+        filename.append(getOutputExtension());
 
         // Save new file
         newImage.save(
                     outputToDirectory+"/"+filename,
-                    "BMP"
+                    getOutputFormat()
                     );
 
         // Update Total Progress Bar
@@ -480,12 +546,12 @@ void MainWindow::transmogrifierLoadOneCopyRow()
             } else if (filename.size() == 3) {
                 filename.prepend("0");
             }
-            filename.append(".bmp");
+            filename.append(getOutputExtension());
 
             // Save new file
             newImage.save(
                         outputToDirectory+"/"+filename,
-                        "BMP"
+                        getOutputFormat()
                         );
 
             // Update Total Progress Bar
@@ -576,3 +642,4 @@ bool MainWindow::isCacheEnabled()
 {
     return ui->useCache->isChecked();
 }
+

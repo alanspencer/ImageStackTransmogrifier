@@ -37,6 +37,14 @@ private:
         YntoY0
     };
 
+    enum OutputFormat
+    {
+        BMPFormat,
+        JPEGFormat,
+        TIFFFormat,
+        PNGFormat
+    };
+
     int getCountDirectoryFiles(QDir directory);
     void getImageStackFileList(QDir directory);
     QString getAvailableFormatsStr();
@@ -45,7 +53,10 @@ private:
     void xLoadChunk(int xChunkStart, int xChunkEnd);
     void runX0toXnLoop(int xChunkStart, int xChunkEnd);
     bool isCacheEnabled();
+    const char *getOutputFormat();
+    const char* getOutputExtension();
 
+    bool isGrayScale;
     QString inputFromFilename;
     QDir inputFromDirectory;
     Direction selectedDirection;
@@ -63,6 +74,9 @@ private:
     QList< QList < QList<QRgb> > > chunkCacheList; // list[{z}][{x}/{y}][{y pixel data}/{x pixel data}]
     int currentTotalNumber;
     bool isRunning;
+    QVector<QRgb> colorTable;
+    QVector<QRgb> colorTableGray;
+    OutputFormat outputFormat;
 
 private slots:
     void inputFromAction();
@@ -76,6 +90,7 @@ private slots:
     void resetAction();
     void aboutAction();
     void checkRunButton();
+    void setOutputFormat(int index);
 
 signals:
     void dataChanged();
