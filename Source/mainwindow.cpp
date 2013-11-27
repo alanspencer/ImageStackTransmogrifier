@@ -7,12 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    processorCount = QThread::idealThreadCount();
-    if (processorCount == -1) {
-        processorCount = 1;
-    }
+    transmogrifier = new Transmogrifier(this);
 
-    selectedDirection = X0toXn;
     reset();
 
     // Create grayscale color table
@@ -55,7 +51,6 @@ void MainWindow::reset()
     inputFromDirectory = NULL;
     imageFormat = QImage::Format_Invalid;
     imageFormatText = "";
-    outputFormat = BMPFormat;
     chunkSize = 100;
     chunkCacheList.clear();
     currentTotalNumber = 0;
@@ -131,39 +126,17 @@ void MainWindow::inputFromAction()
 
             // Work out format
             imageFormat = image.imageFormat();
-            if (imageFormat == QImage::Format_Invalid) {
-                inputFromOK = false;
-                imageFormatText = "The images are invalid";
-            } else if (imageFormat == QImage::Format_Mono) {
-                inputFromOK = false;
-                imageFormatText = "Monocrome MSB";
-            } else if (imageFormat == QImage::Format_MonoLSB) {
-                inputFromOK = false;
-                imageFormatText = "Monocrome LSB";
-            } else if (imageFormat == QImage::Format_Indexed8) {
-                imageFormatText = "Index 8";
-            } else if (imageFormat == QImage::Format_RGB32) {
-                imageFormatText = "RGB 32";
-            } else if (imageFormat == QImage::Format_ARGB32) {
-                imageFormatText = "ARGB 32";
-            } else if (imageFormat == QImage::Format_ARGB32_Premultiplied) {
-                inputFromOK = false;
-                imageFormatText = "ARGB 32 Premultiplied";
-            } else {
-                inputFromOK = false;
-                imageFormatText = "Undefined";
-            }
+            transmogrifier->setImageFormat(imageFormat);
 
             if (imageFormat == QImage::Format_Indexed8) {
-                isGrayScale = image.read().allGray();
-                imageFormatText += " (Grayscale)";
+                transmogrifier->setIsGrayscale(image.read().allGray());
             } else if (QImage::Format_RGB32 || QImage::Format_ARGB32 || QImage::Format_ARGB32_Premultiplied) {
-                isGrayScale = image.read().isGrayscale();
-                imageFormatText += " (Grayscale)";
+                transmogrifier->setIsGrayscale(image.read().isGrayscale());
             }
 
-            // Update GUI
-            ui->imageFormat->setText(imageFormatText);
+            // Image Format Text
+            inputFromOK = transmogrifier->getImageFormatIsValid();
+            ui->imageFormat->setText(transmogrifier->getImageFormatText());
 
             ui->imageWidth->setText(QString("%1 px").arg(imageWidth));
             ui->imageHeight->setText(QString("%1 px").arg(imageHeight));
@@ -190,22 +163,22 @@ void MainWindow::inputFromAction()
 
 void MainWindow::setDirectionX0toXn()
 {
-    selectedDirection = X0toXn;
+    transmogrifier->setDirection(Transmogrifier::X0toXn);
 }
 
 void MainWindow::setDirectionXntoX0()
 {
-    selectedDirection = XntoX0;
+    transmogrifier->setDirection(Transmogrifier::XntoX0);
 }
 
 void MainWindow::setDirectionY0toYn()
 {
-    selectedDirection = Y0toYn;
+    transmogrifier->setDirection(Transmogrifier::Y0toYn);
 }
 
 void MainWindow::setDirectionYntoY0()
 {
-    selectedDirection = YntoY0;
+    transmogrifier->setDirection(Transmogrifier::YntoY0);
 }
 
 void MainWindow::setOutputFormat(int index)
@@ -213,43 +186,14 @@ void MainWindow::setOutputFormat(int index)
    QString selected =  ui->outputFormat->itemText(index);
 
    if (selected == "BMP") {
-       outputFormat = BMPFormat;
+       transmogrifier->setOutputFormat(Transmogrifier::BMPFormat);
    } else if (selected == "JPEG") {
-       outputFormat = JPEGFormat;
+       transmogrifier->setOutputFormat(Transmogrifier::JPEGFormat);
    } else if (selected == "TIFF") {
-       outputFormat = TIFFFormat;
+       transmogrifier->setOutputFormat(Transmogrifier::TIFFFormat);
    } else if (selected == "PNG") {
-       outputFormat = PNGFormat;
+       transmogrifier->setOutputFormat(Transmogrifier::PNGFormat);
    }
-}
-
-
-const char* MainWindow::getOutputFormat() {
-    if (outputFormat == BMPFormat) {
-        return "BMP";
-    } else if (outputFormat == JPEGFormat) {
-        return "JPEG";
-    } else if (outputFormat == TIFFFormat) {
-        return "TIFF";
-    } else if (outputFormat == PNGFormat) {
-        return "PNG";
-    } else {
-        return "BMP";
-    }
-}
-
-const char* MainWindow::getOutputExtension() {
-    if (outputFormat == BMPFormat) {
-        return ".bmp";
-    } else if (outputFormat == JPEGFormat) {
-        return ".jpeg";
-    } else if (outputFormat == TIFFFormat) {
-        return ".tiff";
-    } else if (outputFormat == PNGFormat) {
-        return ".png";
-    } else {
-        return ".bmp";
-    }
 }
 
 void MainWindow::outputToAction()
@@ -285,16 +229,28 @@ void MainWindow::runAction()
     ui->closeButton->setEnabled(false);
     ui->resetButton->setEnabled(false);
     ui->aboutButton->setEnabled(false);
-    isRunning = true;
-    while(isRunning) {
-        if (!isCacheEnabled()) {
-            transmogrifierLoadOneCopyRow();
-        } else {
-            chunkSize = ui->cacheChuckSize->value();
-            transmogrifierLoadChunkCopyRows();
+
+    // Set file structure data
+    try {
+        transmogrifier->setFileStructure(inputFromDirectory.absolutePath(), imageStackFiles, outputToDirectory);
+        transmogrifier->setXValues(imageWidth);
+        transmogrifier->setYValues(imageHeight);
+        transmogrifier->setZValues(sliceNumber);
+
+        if (isCacheEnabled()) {
+            // Is chunked
+            transmogrifier->setCodeVersion(Transmogrifier::ChunkedCode);
+            transmogrifier->setChunkSize(ui->cacheChuckSize->value());
         }
-        isRunning = false;
+
+        // Run
+        transmogrifier->run();
+    } catch (Exception x) {
+        qDebug() << "EXCEPTION:" << x.exceptionMessage;
+        //logError(x.exceptionMessage);
     }
+
+    transmogrifier->reset();
     reset();
 }
 
@@ -575,7 +531,7 @@ void MainWindow::transmogrifierLoadOneCopyRow()
 
 void MainWindow::abortAction()
 {
-    isRunning = false;
+    transmogrifier->abort();
 }
 
 void MainWindow::resetAction()
@@ -643,3 +599,33 @@ bool MainWindow::isCacheEnabled()
     return ui->useCache->isChecked();
 }
 
+// Progress Bars
+void MainWindow::setupChunkProgressBar(int maxValue)
+{
+    ui->chunkProgressBar->setMaximum(maxValue);
+}
+
+void MainWindow::setupSliceProgressBar(int maxValue)
+{
+    ui->imageProgressBar->setMaximum(maxValue);
+}
+
+void MainWindow::setupOverallProgressBar(int maxValue)
+{
+    ui->totalProgressBar->setMaximum(maxValue);
+}
+
+void MainWindow::setChunkProgress(int value)
+{
+    ui->chunkProgressBar->setValue(value);
+}
+
+void MainWindow::setSliceProgress(int value)
+{
+    ui->imageProgressBar->setValue(value);
+}
+
+void MainWindow::setOverallProgress(int value)
+{
+   ui->totalProgressBar->setValue(value);
+}

@@ -9,9 +9,12 @@
 #include <QMessageBox>
 #include <QImageReader>
 #include <QDir>
-#include <QThread>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
+
+#include "exception.h"
+#include "transmogrifier.h"
+
+class Exception;
+class Transmogrifier;
 
 namespace Ui {
 class MainWindow;
@@ -28,22 +31,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-
-    enum Direction
-    {
-        X0toXn,
-        XntoX0,
-        Y0toYn,
-        YntoY0
-    };
-
-    enum OutputFormat
-    {
-        BMPFormat,
-        JPEGFormat,
-        TIFFFormat,
-        PNGFormat
-    };
+    Transmogrifier *transmogrifier;
 
     int getCountDirectoryFiles(QDir directory);
     void getImageStackFileList(QDir directory);
@@ -53,8 +41,13 @@ private:
     void xLoadChunk(int xChunkStart, int xChunkEnd);
     void runX0toXnLoop(int xChunkStart, int xChunkEnd);
     bool isCacheEnabled();
-    const char *getOutputFormat();
-    const char* getOutputExtension();
+
+    void setupChunkProgressBar(int maxValue);
+    void setupSliceProgressBar(int maxValue);
+    void setupOverallProgressBar(int maxValue);
+    void setChunkProgress(int value);
+    void setSliceProgress(int value);
+    void setOverallProgress(int value);
 
     bool isGrayScale;
     QString inputFromFilename;
