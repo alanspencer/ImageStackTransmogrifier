@@ -12,7 +12,7 @@ class MainWindow;
 class Transmogrifier
 {
 public:
-    Transmogrifier(MainWindow *mw);
+    Transmogrifier(MainWindow *mw, LogWriter *lw);
     void reset();
 
     enum Direction
@@ -73,6 +73,7 @@ private:
     const char* getOutputExtension();
 
     MainWindow *mainWindow;
+    LogWriter *logWriter;
 
     Direction direction;
     CodeVersion codeVersion;

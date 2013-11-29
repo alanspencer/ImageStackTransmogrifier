@@ -1,8 +1,9 @@
 #include "transmogrifier.h"
 
-Transmogrifier::Transmogrifier(MainWindow *mw)
+Transmogrifier::Transmogrifier(MainWindow *mw, LogWriter *lw)
 {
     mainWindow = mw;
+    logWriter = lw;
 
     direction = X0toXn;
     codeVersion = StandardCode;

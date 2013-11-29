@@ -23,7 +23,7 @@
      </widget>
     </item>
     <item>
-     <layout class="QGridLayout" name="gridLayout" columnminimumwidth="100,0,0">
+     <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="1">
        <widget class="QLineEdit" name="inputFrom">
         <property name="readOnly">
@@ -39,9 +39,9 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QPushButton" name="inputFromButton">
+       <widget class="QToolButton" name="inputFromButton">
         <property name="text">
-         <string>Select Image Stack</string>
+         <string>...</string>
         </property>
        </widget>
       </item>
@@ -369,10 +369,17 @@
      </widget>
     </item>
     <item>
-     <layout class="QGridLayout" name="gridLayout_2" columnminimumwidth="100,0,0,0">
+     <layout class="QGridLayout" name="gridLayout_2">
       <property name="topMargin">
        <number>0</number>
       </property>
+      <item row="1" column="3">
+       <widget class="QToolButton" name="outputToButton">
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="2">
        <widget class="QLineEdit" name="outputTo">
         <property name="readOnly">
@@ -384,13 +391,6 @@
        <widget class="QLabel" name="label_12">
         <property name="text">
          <string>Output To:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="outputToButton">
-        <property name="text">
-         <string>Select Output Directory</string>
         </property>
        </widget>
       </item>
@@ -560,7 +560,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="abortButton">
+       <widget class="QToolButton" name="abortButton">
         <property name="enabled">
          <bool>false</bool>
         </property>
@@ -570,7 +570,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="resetButton">
+       <widget class="QToolButton" name="resetButton">
         <property name="text">
          <string>Reset</string>
         </property>
@@ -587,7 +587,7 @@
    <property name="minimumSize">
     <size>
      <width>200</width>
-     <height>111</height>
+     <height>148</height>
     </size>
    </property>
    <property name="windowTitle">
@@ -600,6 +600,40 @@
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
       <widget class="QTextBrowser" name="logBrowser"/>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QToolButton" name="saveLogButton">
+         <property name="text">
+          <string>Save...</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="clearLogButton">
+         <property name="text">
+          <string>Clear</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>

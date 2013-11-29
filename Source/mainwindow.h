@@ -11,9 +11,11 @@
 #include <QDir>
 
 #include "exception.h"
+#include "logwriter.h"
 #include "transmogrifier.h"
 
 class Exception;
+class LogWriter;
 class Transmogrifier;
 
 namespace Ui {
@@ -29,9 +31,20 @@ public:
     ~MainWindow();
     void reset();
 
+    void setupChunkProgressBar(int maxValue);
+    void setupSliceProgressBar(int maxValue);
+    void setupOverallProgressBar(int maxValue);
+    void setChunkProgress(int value);
+    void setSliceProgress(int value);
+    void setOverallProgress(int value);
+
+    void logAppend(QString message);
+    void logClear();
+
 private:
     Ui::MainWindow *ui;
     Transmogrifier *transmogrifier;
+    LogWriter *logWriter;
 
     int getCountDirectoryFiles(QDir directory);
     void getImageStackFileList(QDir directory);
@@ -41,13 +54,6 @@ private:
     void xLoadChunk(int xChunkStart, int xChunkEnd);
     void runX0toXnLoop(int xChunkStart, int xChunkEnd);
     bool isCacheEnabled();
-
-    void setupChunkProgressBar(int maxValue);
-    void setupSliceProgressBar(int maxValue);
-    void setupOverallProgressBar(int maxValue);
-    void setChunkProgress(int value);
-    void setSliceProgress(int value);
-    void setOverallProgress(int value);
 
     bool isGrayScale;
     QString inputFromFilename;
@@ -84,6 +90,8 @@ private slots:
     void aboutAction();
     void checkRunButton();
     void setOutputFormat(int index);
+    void saveLogAction();
+    void clearLogAction();
 
 signals:
     void dataChanged();

@@ -6,8 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    transmogrifier = new Transmogrifier(this);
+    logWriter = new LogWriter(this);
+    transmogrifier = new Transmogrifier(this, logWriter);
 
     reset();
 
@@ -16,7 +16,6 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         colorTableGray.append(QColor(c,c,c).rgb());
     }
-
 
     ui->supportedImageFormats->setText(getAvailableFormatsStr());
 
@@ -32,6 +31,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->abortButton, SIGNAL(clicked()), this, SLOT(abortAction()));
     connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetAction()));
     connect(ui->aboutButton, SIGNAL(clicked()), this, SLOT(aboutAction()));
+    connect(ui->saveLogButton, SIGNAL(clicked()), this, SLOT(saveLogAction()));
+    connect(ui->clearLogButton, SIGNAL(clicked()), this, SLOT(clearLogAction()));
+
+    logWriter->appendToLog("Main Application", "Intiallised");
 }
 
 MainWindow::~MainWindow()
@@ -628,4 +631,34 @@ void MainWindow::setSliceProgress(int value)
 void MainWindow::setOverallProgress(int value)
 {
    ui->totalProgressBar->setValue(value);
+}
+
+// Log Dock
+void MainWindow::logAppend(QString message)
+{
+    ui->logBrowser->append(message);
+}
+
+void MainWindow::logClear()
+{
+    ui->logBrowser->clear();
+}
+
+void MainWindow::saveLogAction()
+{
+    QString filename = QFileDialog::getSaveFileName(
+            this,
+            tr("Save Application Log"),
+            "",
+            tr("Text File (*.txt);;All Files (*)")
+            );
+    if (fileName.isEmpty()) {
+             return;
+    } else {
+        logWriter->outputToFile(filename);
+    }
+}
+
+void MainWindow::clearLogAction(){
+    logWriter->clearLog();
 }

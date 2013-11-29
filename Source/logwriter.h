@@ -3,18 +3,24 @@
 
 #include <QList>
 #include <QString>
+#include <QFile>
+#include <QTextStream>
+
+#include "mainwindow.h"
+
+class MainWindow;
 
 class LogWriter
 {
 public:
-    LogWriter();
+    LogWriter(MainWindow *mw);
 
-    void appendToLog(QString message);
+    void appendToLog(QString strTitle, QString strMessage);
     void clearLog();
-    void outputToScreen();
-    void outputToFile(QString fileToMake);
+    void outputToFile(QString filename);
 
 private:
+    MainWindow *mainWindow;
     QList<QString> log;
 };
 
