@@ -80,10 +80,15 @@ void MainWindow::reset()
     ui->cacheChuckSize->setValue(50);
 
     ui->inputFromButton->setEnabled(true);
+
     ui->directionX0toXn->setEnabled(true);
-    ui->directionXntoX0->setEnabled(true);
-    ui->directionY0toYn->setEnabled(true);
-    ui->directionYntoY0->setEnabled(true);
+    //ui->directionXntoX0->setEnabled(true);
+    //ui->directionY0toYn->setEnabled(true);
+    //ui->directionYntoY0->setEnabled(true);
+    ui->directionXntoX0->setEnabled(false);
+    ui->directionY0toYn->setEnabled(false);
+    ui->directionYntoY0->setEnabled(false);
+
     ui->outputToButton->setEnabled(true);
     ui->runButton->setEnabled(false);
     ui->abortButton->setEnabled(false);

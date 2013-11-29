@@ -259,6 +259,9 @@
       </item>
       <item row="1" column="2">
        <widget class="QRadioButton" name="directionXntoX0">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Xn to X0</string>
         </property>
@@ -276,6 +279,9 @@
       </item>
       <item row="1" column="4">
        <widget class="QRadioButton" name="directionY0toYn">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Y0 to Yn</string>
         </property>
@@ -283,6 +289,9 @@
       </item>
       <item row="1" column="3">
        <widget class="QRadioButton" name="directionYntoY0">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
         <property name="text">
          <string>Yn to Y0</string>
         </property>
