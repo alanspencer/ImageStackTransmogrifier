@@ -1,4 +1,5 @@
-#include "mainwindow.h"
+#include "commonheader.h"
+
 #include <QApplication>
 #include <QPictureFormatPlugin>
 

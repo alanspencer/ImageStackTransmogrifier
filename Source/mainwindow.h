@@ -9,9 +9,10 @@
 #include <QMessageBox>
 #include <QImageReader>
 #include <QDir>
-#include <QThread>
-#include <QFuture>
-#include <QtConcurrent/QtConcurrent>
+
+class Exception;
+class Logger;
+class Transmogrifier;
 
 namespace Ui {
 class MainWindow;
@@ -26,40 +27,28 @@ public:
     ~MainWindow();
     void reset();
 
+    void setupChunkProgressBar(int maxValue);
+    void setupSliceProgressBar(int maxValue);
+    void setupOverallProgressBar(int maxValue);
+    void setChunkProgress(int value);
+    void setSliceProgress(int value);
+    void setOverallProgress(int value);
+
+    void logAppend(QString message);
+    void logClear();
+
 private:
     Ui::MainWindow *ui;
-
-    enum Direction
-    {
-        X0toXn,
-        XntoX0,
-        Y0toYn,
-        YntoY0
-    };
-
-    enum OutputFormat
-    {
-        BMPFormat,
-        JPEGFormat,
-        TIFFFormat,
-        PNGFormat
-    };
+    Transmogrifier *transmogrifier;
+    Logger *log;
 
     int getCountDirectoryFiles(QDir directory);
     void getImageStackFileList(QDir directory);
     QString getAvailableFormatsStr();
-    void transmogrifierLoadOneCopyRow();
-    void transmogrifierLoadChunkCopyRows();
-    void xLoadChunk(int xChunkStart, int xChunkEnd);
-    void runX0toXnLoop(int xChunkStart, int xChunkEnd);
-    bool isCacheEnabled();
-    const char *getOutputFormat();
-    const char* getOutputExtension();
 
     bool isGrayScale;
     QString inputFromFilename;
     QDir inputFromDirectory;
-    Direction selectedDirection;
     QString outputToDirectory;
     int sliceNumber;
     int imageWidth;
@@ -76,7 +65,6 @@ private:
     bool isRunning;
     QVector<QRgb> colorTable;
     QVector<QRgb> colorTableGray;
-    OutputFormat outputFormat;
 
 private slots:
     void inputFromAction();
@@ -91,6 +79,8 @@ private slots:
     void aboutAction();
     void checkRunButton();
     void setOutputFormat(int index);
+    void saveLogAction();
+    void clearLogAction();
 
 signals:
     void dataChanged();
