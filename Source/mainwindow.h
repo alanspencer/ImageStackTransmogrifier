@@ -10,12 +10,8 @@
 #include <QImageReader>
 #include <QDir>
 
-#include "exception.h"
-#include "logwriter.h"
-#include "transmogrifier.h"
-
 class Exception;
-class LogWriter;
+class Logger;
 class Transmogrifier;
 
 namespace Ui {
@@ -44,21 +40,15 @@ public:
 private:
     Ui::MainWindow *ui;
     Transmogrifier *transmogrifier;
-    LogWriter *logWriter;
+    Logger *log;
 
     int getCountDirectoryFiles(QDir directory);
     void getImageStackFileList(QDir directory);
     QString getAvailableFormatsStr();
-    void transmogrifierLoadOneCopyRow();
-    void transmogrifierLoadChunkCopyRows();
-    void xLoadChunk(int xChunkStart, int xChunkEnd);
-    void runX0toXnLoop(int xChunkStart, int xChunkEnd);
-    bool isCacheEnabled();
 
     bool isGrayScale;
     QString inputFromFilename;
     QDir inputFromDirectory;
-    Direction selectedDirection;
     QString outputToDirectory;
     int sliceNumber;
     int imageWidth;
@@ -75,7 +65,6 @@ private:
     bool isRunning;
     QVector<QRgb> colorTable;
     QVector<QRgb> colorTableGray;
-    OutputFormat outputFormat;
 
 private slots:
     void inputFromAction();

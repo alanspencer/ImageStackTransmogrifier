@@ -5,14 +5,13 @@
 #include <QList>
 #include <QImage>
 
-#include "mainwindow.h"
-
+class Logger;
 class MainWindow;
 
 class Transmogrifier
 {
 public:
-    Transmogrifier(MainWindow *mw, LogWriter *lw);
+    Transmogrifier(MainWindow *mw, Logger *l);
     void reset();
 
     enum Direction
@@ -51,6 +50,8 @@ public:
     Transmogrifier::Direction getDirection();
     Transmogrifier::CodeVersion getCodeVersion();
     Transmogrifier::OutputFormat getOutputFormat();
+    QString getOutputFormatText();
+    QString getOutputExtension();
     QImage::Format getImageFormat();
     bool getRunningStatus();
     bool getIsGrayscale();
@@ -69,11 +70,8 @@ private:
     void updateSliceProgress(int value);
     void updateOverallProgress(int value);
 
-    const char *getOutputFormat();
-    const char* getOutputExtension();
-
     MainWindow *mainWindow;
-    LogWriter *logWriter;
+    Logger *log;
 
     Direction direction;
     CodeVersion codeVersion;

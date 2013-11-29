@@ -1,22 +1,21 @@
-#ifndef LOGWRITER_H
-#define LOGWRITER_H
+#ifndef LOGGER_H
+#define LOGGER_H
 
 #include <QList>
 #include <QString>
 #include <QFile>
 #include <QTextStream>
-
-#include "mainwindow.h"
+#include <QDateTime>
 
 class MainWindow;
 
-class LogWriter
+class Logger
 {
 public:
-    LogWriter(MainWindow *mw);
+    Logger(MainWindow *mw);
 
-    void appendToLog(QString strTitle, QString strMessage);
-    void clearLog();
+    void append(QString strTitle, QString strMessage);
+    void clear();
     void outputToFile(QString filename);
 
 private:
@@ -24,4 +23,4 @@ private:
     QList<QString> log;
 };
 
-#endif // LOGWRITER_H
+#endif // LOGGER_H

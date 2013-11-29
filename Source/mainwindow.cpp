@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "commonheader.h"
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -6,8 +6,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    logWriter = new LogWriter(this);
-    transmogrifier = new Transmogrifier(this, logWriter);
+    log = new Logger(this);
+    transmogrifier = new Transmogrifier(this, log);
 
     reset();
 
@@ -24,17 +24,17 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->directionXntoX0, SIGNAL(clicked()), this, SLOT(setDirectionXntoX0()));
     connect(ui->directionY0toYn, SIGNAL(clicked()), this, SLOT(setDirectionY0toYn()));
     connect(ui->directionYntoY0, SIGNAL(clicked()), this, SLOT(setDirectionYntoY0()));
-    connect(ui->outputFormat, SIGNAL(currentIndexChanged(int)), this, SLOT(setOutputFormat(int)));
+    connect(ui->outputFormatComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(setOutputFormat(int)));
     connect(ui->outputToButton, SIGNAL(clicked()), this, SLOT(outputToAction()));
     connect(this, SIGNAL(dataChanged()), this, SLOT(checkRunButton()));
     connect(ui->runButton, SIGNAL(clicked()), this, SLOT(runAction()));
     connect(ui->abortButton, SIGNAL(clicked()), this, SLOT(abortAction()));
     connect(ui->resetButton, SIGNAL(clicked()), this, SLOT(resetAction()));
-    connect(ui->aboutButton, SIGNAL(clicked()), this, SLOT(aboutAction()));
+    connect(ui->actionAbout, SIGNAL(triggered()), this, SLOT(aboutAction()));
     connect(ui->saveLogButton, SIGNAL(clicked()), this, SLOT(saveLogAction()));
     connect(ui->clearLogButton, SIGNAL(clicked()), this, SLOT(clearLogAction()));
 
-    logWriter->appendToLog("Main Application", "Intiallised");
+    log->append("Main Application", "Intiallised");
 }
 
 MainWindow::~MainWindow()
@@ -74,7 +74,7 @@ void MainWindow::reset()
     ui->selectedStackFiles->setRowCount(0);
     imageStackFiles.clear();
 
-    ui->useCache->setChecked(true);
+    ui->algorithmComboBox->setCurrentIndex(0);
     ui->cacheChuckSize->setValue(50);
 
     ui->inputFromButton->setEnabled(true);
@@ -85,9 +85,7 @@ void MainWindow::reset()
     ui->outputToButton->setEnabled(true);
     ui->runButton->setEnabled(false);
     ui->abortButton->setEnabled(false);
-    ui->closeButton->setEnabled(true);
     ui->resetButton->setEnabled(true);
-    ui->aboutButton->setEnabled(true);
 
     ui->totalProgressBar->setValue(0);
     ui->imageProgressBar->setValue(0);
@@ -96,6 +94,7 @@ void MainWindow::reset()
 
 void MainWindow::inputFromAction()
 {
+    log->append("X/Y Transmogrifier", "Opening Image Stack folder selection window.");
     inputFromFilename = QFileDialog::getOpenFileName(
                 this,
                 tr("Select First Image of Stack"),
@@ -104,9 +103,11 @@ void MainWindow::inputFromAction()
                 );
     if (!inputFromFilename.isEmpty()) {
         inputFromDirectory = QFileInfo(inputFromFilename).absoluteDir();
-
-        // Update GUI
-        ui->inputFrom->setText(inputFromDirectory.absolutePath());       
+        ui->inputFrom->setText(inputFromDirectory.absolutePath());
+        log->append("X/Y Transmogrifier",
+                QString("Input Image Stack folder = \"%1\".")
+                    .arg(inputFromDirectory.absolutePath())
+                );
 
         // Open selected image and get its width, height, type, etc...
         QImageReader image(inputFromFilename);
@@ -119,9 +120,19 @@ void MainWindow::inputFromAction()
                         .arg(inputFromFilename)
                         .arg(getAvailableFormatsStr())
                      );
+            log->append("X/Y Transmogrifier",
+                    QString("Cannot open %1. Only the following file formates can be opened: %2.")
+                        .arg(inputFromFilename)
+                        .arg(getAvailableFormatsStr())
+                    );
             return;
-        } else {
+        } else {           
             inputFromOK = true;
+
+            log->append("X/Y Transmogrifier",
+                    QString("Reading %1 and collating image information.")
+                        .arg(inputFromFilename)
+                    );
 
             QSize imageSize = image.size();
             imageWidth = imageSize.width();
@@ -159,8 +170,9 @@ void MainWindow::inputFromAction()
         }
     } else {
         inputFromOK = false;
+        log->append("X/Y Transmogrifier", "No folder/file selected.");
     }
-
+    log->append("X/Y Transmogrifier", "Closing Image Stack folder selection window.");
     emit dataChanged();
 }
 
@@ -186,7 +198,7 @@ void MainWindow::setDirectionYntoY0()
 
 void MainWindow::setOutputFormat(int index)
 {
-   QString selected =  ui->outputFormat->itemText(index);
+   QString selected =  ui->outputFormatComboBox->itemText(index);
 
    if (selected == "BMP") {
        transmogrifier->setOutputFormat(Transmogrifier::BMPFormat);
@@ -218,318 +230,9 @@ void MainWindow::outputToAction()
     emit dataChanged();
 }
 
-
 void MainWindow::runAction()
 {
-    ui->inputFromButton->setEnabled(false);
-    ui->directionX0toXn->setEnabled(false);
-    ui->directionXntoX0->setEnabled(false);
-    ui->directionY0toYn->setEnabled(false);
-    ui->directionYntoY0->setEnabled(false);
-    ui->outputToButton->setEnabled(false);
-    ui->runButton->setEnabled(false);
-    ui->abortButton->setEnabled(true);
-    ui->closeButton->setEnabled(false);
-    ui->resetButton->setEnabled(false);
-    ui->aboutButton->setEnabled(false);
 
-    // Set file structure data
-    try {
-        transmogrifier->setFileStructure(inputFromDirectory.absolutePath(), imageStackFiles, outputToDirectory);
-        transmogrifier->setXValues(imageWidth);
-        transmogrifier->setYValues(imageHeight);
-        transmogrifier->setZValues(sliceNumber);
-
-        if (isCacheEnabled()) {
-            // Is chunked
-            transmogrifier->setCodeVersion(Transmogrifier::ChunkedCode);
-            transmogrifier->setChunkSize(ui->cacheChuckSize->value());
-        }
-
-        // Run
-        transmogrifier->run();
-    } catch (Exception x) {
-        qDebug() << "EXCEPTION:" << x.exceptionMessage;
-        //logError(x.exceptionMessage);
-    }
-
-    transmogrifier->reset();
-    reset();
-}
-
-void MainWindow::transmogrifierLoadChunkCopyRows()
-{
-    currentTotalNumber = 0;
-
-    if (selectedDirection == X0toXn) {
-        ui->totalProgressBar->setMaximum(imageWidth);
-
-        int xChunkStart = 0;
-        int xChunkEnd = chunkSize;
-        int numChunks = imageWidth/chunkSize;
-        int remainderChunks = imageWidth-(numChunks*chunkSize);
-
-        // Do chunks...
-        for(int n = 0; n < numChunks; n++)  // loop #0
-        {
-            xLoadChunk(xChunkStart, xChunkEnd);
-            runX0toXnLoop(xChunkStart, xChunkEnd);
-            xChunkStart = xChunkEnd;
-            xChunkEnd = xChunkEnd+chunkSize;
-        }
-
-        // Do remainder chunks...
-        if (remainderChunks > 0) {
-            xChunkStart = imageWidth-remainderChunks;
-            xChunkEnd = imageWidth;
-            xLoadChunk(xChunkStart, xChunkEnd);
-            runX0toXnLoop(xChunkStart, xChunkEnd);
-        }
-
-    } else if (selectedDirection == XntoX0) {
-        // TO DO... same as above but in reserve order
-
-    } else if (selectedDirection == Y0toYn) {
-        // TO DO... same as X0toXn but with x and y reversed
-
-    } else if (selectedDirection == YntoY0) {
-        // TO DO... same as above but in reserve order
-
-    }
-}
-
-void MainWindow::xLoadChunk(int xChunkStart, int xChunkEnd)
-{
-    chunkCacheList.clear();
-
-    qDebug() << "Loading Chunks " << xChunkStart << "to" << xChunkEnd << "...";
-
-    int currentChunkProgress = 0;
-    ui->chunkProgressBar->setValue(currentChunkProgress);
-    ui->chunkProgressBar->setMaximum(imageStackFiles.count());
-
-    QList< QList<QRgb> > sliceData;
-    QList<QRgb> columnData;
-
-    for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
-    {
-        // Open Image z for reading
-        QImage image = QImage(inputFromDirectory.absolutePath()+"/"+imageStackFiles[z]);
-        bool breakOuterLoop = false;
-
-        for(int x = xChunkStart;  x < xChunkEnd; x++)  // loop #1 - get rows
-        {
-            if (x > imageWidth) {
-                breakOuterLoop = true;
-                break;
-            }
-
-            // Save desired chuck           
-            for(int y = 0; y < imageHeight; y++) // loop #3 - gets columns
-            {
-                columnData.append(image.pixel(x, y));
-            }
-            sliceData.append(columnData);
-            columnData.clear();
-        }
-        chunkCacheList.append(sliceData);
-        sliceData.clear();
-
-        qDebug() << "Chunk " << xChunkStart << "to" << xChunkEnd << " for slice " << z << "loaded.";
-
-        if (breakOuterLoop) {
-            break;
-        }
-
-        currentChunkProgress++;
-        ui->chunkProgressBar->setValue(currentChunkProgress);
-    }
-}
-
-void MainWindow::runX0toXnLoop(int xChunkStart, int xChunkEnd)
-{
-    qDebug() << "Creating Slices  from Chunks " << xChunkStart << "to" << xChunkEnd << "...";
-
-    // Current x value for reading
-    int xList = 0;
-    for(int x = xChunkStart; x < xChunkEnd; x++)  // loop #1
-    {
-        // Create new file to write to
-        QImage newImage(imageHeight,imageStackFiles.count(), imageFormat);
-        colorTable.clear();
-        int currentProgress = 0;
-
-        ui->imageProgressBar->setValue(currentProgress);
-        ui->imageProgressBar->setMaximum(imageStackFiles.count());
-
-        if (isGrayScale && imageFormat == QImage::Format_Indexed8) {
-            colorTable = colorTableGray;
-            newImage.setColorTable(colorTable);
-        }
-
-        // Slice to read from
-        for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
-        {
-            // Pixel color to read an copy to new image
-            for(int y = 0; y < imageHeight; y++) // loop #3
-            {
-                QRgb currentPixelColor = chunkCacheList[z][xList][y];
-
-                // 8-bit Images
-                if (imageFormat == QImage::Format_Indexed8){
-                    // Check if pixel color is already in the new color table
-                    bool found = false;
-                    for(int c = 0; c < colorTable.size(); c++)
-                    {
-                        if (colorTable[c] == currentPixelColor) {
-                            newImage.setPixel(y, z, c);
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                        int value = colorTable.size();
-                        colorTable.append(currentPixelColor);
-                        newImage.setColor(value, currentPixelColor);
-                        newImage.setPixel(y, z, value);
-                    }
-                }
-                // 32-bit Images
-                else if (imageFormat == QImage::Format_RGB32 || QImage::Format_ARGB32 || QImage::Format_ARGB32_Premultiplied) {
-                    newImage.setPixel(y, z, currentPixelColor);
-                }
-            } // end loop #3
-
-            // Update Image Progress Bar
-            currentProgress++;
-            ui->imageProgressBar->setValue(currentProgress);
-            qApp->processEvents();
-
-        } // end loop #2
-        xList++;
-
-        // New Filename
-        QString filename = QString("%1").arg(currentTotalNumber);
-        if(filename.size() == 1) {
-            filename.prepend("000");
-        } else if (filename.size() == 2) {
-            filename.prepend("00");
-        } else if (filename.size() == 3) {
-            filename.prepend("0");
-        }
-        filename.append(getOutputExtension());
-
-        // Save new file
-        newImage.save(
-                    outputToDirectory+"/"+filename,
-                    getOutputFormat()
-                    );
-
-        // Update Total Progress Bar
-        currentTotalNumber++;
-        qDebug() << "Created Slice " << currentTotalNumber << "from Chunk.";
-        ui->totalProgressBar->setValue(currentTotalNumber);
-        qApp->processEvents();
-    } // end loop #1
-}
-
-void MainWindow::transmogrifierLoadOneCopyRow()
-{
-    int currentImageNumber = 0;
-
-    if (selectedDirection == X0toXn) {
-        ui->totalProgressBar->setMaximum(imageWidth);
-
-        // Current x value for reading
-        for(int x = 0; x < imageWidth; x++)  // loop #1
-        {
-
-            // Create new .bmp file to write to
-            QImage newImage(imageHeight, imageStackFiles.count(), imageFormat);
-            QVector<QRgb> colorTable;
-            int currentProgress = 0;
-
-            ui->imageProgressBar->setValue(currentProgress);
-            ui->imageProgressBar->setMaximum(imageStackFiles.count());
-
-            // Slice to read from
-            for (int z = 0; z < imageStackFiles.count(); z++) // loop #2
-            {
-                // Open Image z for reading
-                QImage image = QImage(inputFromDirectory.absolutePath()+"/"+imageStackFiles[z]);
-
-                // Pixel color to read an copy to new image
-                for(int y = 0; y < imageHeight; y++) // loop #3
-                {
-                    QRgb currentPixelColor = image.pixel(x, y);
-
-                    // 8-bit Images
-                    if (imageFormat == QImage::Format_Indexed8){
-                        // Check if pixel colur is already in the color table
-                        bool found = false;
-                        for(int c = 0; c < colorTable.size(); c++)
-                        {
-                            if (colorTable[c] == currentPixelColor) {
-                                newImage.setPixel(y, z, c);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found) {
-                            int value = colorTable.size();
-                            colorTable.append(currentPixelColor);
-                            newImage.setColor(value, currentPixelColor);
-                            newImage.setPixel(y, z, value);
-                        }
-                    }
-                    // 32-bit Images
-                    else if (imageFormat == QImage::Format_RGB32 || QImage::Format_ARGB32 || QImage::Format_ARGB32_Premultiplied) {
-                        newImage.setPixel(y, z, currentPixelColor);
-                    }
-                } // end loop #3
-
-                // Update Image Progress Bar
-                currentProgress++;
-                ui->imageProgressBar->setValue(currentProgress);
-                qApp->processEvents();
-
-            } // end loop #2
-
-
-            // New Filename
-            QString filename = QString("%1").arg(currentImageNumber);
-            if(filename.size() == 1) {
-                filename.prepend("000");
-            } else if (filename.size() == 2) {
-                filename.prepend("00");
-            } else if (filename.size() == 3) {
-                filename.prepend("0");
-            }
-            filename.append(getOutputExtension());
-
-            // Save new file
-            newImage.save(
-                        outputToDirectory+"/"+filename,
-                        getOutputFormat()
-                        );
-
-            // Update Total Progress Bar
-            currentImageNumber++;
-            ui->totalProgressBar->setValue(currentImageNumber);
-            qApp->processEvents();
-
-        } // end loop #1
-
-    } else if (selectedDirection == XntoX0) {
-        // TO DO... same as above but in reserve order
-
-    } else if (selectedDirection == Y0toYn) {
-        // TO DO... same as X0toXn but with x and y reversed
-
-    } else if (selectedDirection == YntoY0) {
-        // TO DO... same as above but in reserve order
-
-    }
 }
 
 void MainWindow::abortAction()
@@ -597,11 +300,6 @@ QString MainWindow::getAvailableFormatsStr()
     return availableFormats;
 }
 
-bool MainWindow::isCacheEnabled()
-{
-    return ui->useCache->isChecked();
-}
-
 // Progress Bars
 void MainWindow::setupChunkProgressBar(int maxValue)
 {
@@ -652,13 +350,13 @@ void MainWindow::saveLogAction()
             "",
             tr("Text File (*.txt);;All Files (*)")
             );
-    if (fileName.isEmpty()) {
+    if (filename.isEmpty()) {
              return;
     } else {
-        logWriter->outputToFile(filename);
+        log->outputToFile(filename);
     }
 }
 
 void MainWindow::clearLogAction(){
-    logWriter->clearLog();
+    log->clear();
 }

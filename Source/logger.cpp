@@ -1,11 +1,11 @@
-#include "logwriter.h"
+#include "commonheader.h"
 
-LogWriter::LogWriter(MainWindow *mw)
+Logger::Logger(MainWindow *mw)
 {
     mainWindow = mw;
 }
 
-void LogWriter::append(QString strTitle, QString strMessage)
+void Logger::append(QString strTitle, QString strMessage)
 {
     QString logText;
     QString logHTML;
@@ -26,13 +26,13 @@ void LogWriter::append(QString strTitle, QString strMessage)
     mainWindow->logAppend(logHTML);
 }
 
-void LogWriter::clear()
+void Logger::clear()
 {
     log.clear();
     mainWindow->logClear();
 }
 
-void LogWriter::outputToFile(QString filename)
+void Logger::outputToFile(QString filename)
 {
 
     QFile file(filename);

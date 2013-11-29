@@ -20,12 +20,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     transmogrifier.cpp \
     exception.cpp \
-    logwriter.cpp
+    logger.cpp
 
 HEADERS  += mainwindow.h \
     transmogrifier.h \
     exception.h \
-    logwriter.h
+    commonheader.h \
+    logger.h
 
 FORMS    += mainwindow.ui
 

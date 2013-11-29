@@ -1,4 +1,4 @@
-#include "exception.h"
+#include "commonheader.h"
 
 Exception::Exception(QString str)
 {
