@@ -28,7 +28,8 @@ HEADERS  += mainwindow.h \
     commonheader.h \
     logger.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    transmogrifier.ui
 
 # The application version
 VERSION = 1.1
