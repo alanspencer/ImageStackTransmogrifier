@@ -1,9 +1,11 @@
 #include "commonheader.h"
+#include "ui_transmogrifier.h"
 
-Transmogrifier::Transmogrifier(MainWindow *mw, Logger *l)
+Transmogrifier::Transmogrifier(QWidget *parent):
+    QWidget(parent),
+    form(new Ui::transmogrifierForm)
 {
-    mainWindow = mw;
-    log = l;
+    form->setupUi(this);
 
     direction = X0toXn;
     codeVersion = StandardCode;
@@ -139,11 +141,23 @@ void Transmogrifier::setZValues(int value, int start, int end)
     }
 }
 
-void Transmogrifier::setFileStructure(QString inDir, QList<QString> fList, QString outDir)
+bool Transmogrifier::setInputDirectory(QString inDir)
 {
     inputFromDirectory = inDir;
+
+    // Run File Stack checks
+    populateInputFileList();
+
+    // Update GUI if OK
+    return true;
+}
+
+bool Transmogrifier::setOutputDirectory(QString outDir)
+{
     outputToDirectory = outDir;
-    inputStackFiles = fList;
+
+    // update GUI if OK
+    return true;
 }
 
 void Transmogrifier::setChunkSize(int size)
@@ -195,6 +209,23 @@ bool Transmogrifier::getRunningStatus()
 bool Transmogrifier::getIsGrayscale()
 {
    return isGrayscale;
+}
+
+int Transmogrifier::getInputFilesCount()
+{
+    return inputDirectoryFiles.count();
+}
+
+
+void Transmogrifier::populateInputFileList()
+{
+    inputDirectoryFiles.clear();
+    QDir dir(inputFromDirectory);
+    dir.setFilter(QDir::Files);
+    for(int i = 0; i < dir.entryInfoList().size(); i++)
+    {
+        inputDirectoryFiles.append(dir.entryInfoList()[i].fileName());
+    }
 }
 
 // Run

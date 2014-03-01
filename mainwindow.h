@@ -42,20 +42,16 @@ private:
     Transmogrifier *transmogrifier;
     Logger *log;
 
-    int getCountDirectoryFiles(QDir directory);
-    void getImageStackFileList(QDir directory);
+    int getCountDirectoryFiles(QString directory);
+    QList<QString> getImageStackFileList(QString directory);
     QString getAvailableFormatsStr();
 
     bool isGrayScale;
-    QString inputFromFilename;
-    QDir inputFromDirectory;
-    QString outputToDirectory;
     int sliceNumber;
     int imageWidth;
     int imageHeight;
     QImage::Format imageFormat;
     QString imageFormatText;
-    QList<QString> imageStackFiles;
     bool inputFromOK;
     bool outputToOK;
     int processorCount;

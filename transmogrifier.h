@@ -1,18 +1,19 @@
 #ifndef TRANSMOGRIFIER_H
 #define TRANSMOGRIFIER_H
 
-#include <QString>
-#include <QList>
-#include <QImage>
+#include <QWidget>
 
 class Logger;
 class MainWindow;
 
-class Transmogrifier
+class Transmogrifier : public QWidget
 {
 public:
     Transmogrifier(MainWindow *mw, Logger *l);
     void reset();
+
+    MainWindow *mainWindow;
+    Logger *log;
 
     enum Direction
     {
@@ -40,10 +41,11 @@ public:
     void setCodeVersion(CodeVersion cVer);
     void setOutputFormat(OutputFormat of);
     void setImageFormat(QImage::Format format);
+    bool setInputDirectory(QString inDir);
+    bool setOutputDirectory(QString outDir);
     void setXValues(int value, int start = 0, int end = 0);
     void setYValues(int value, int start = 0, int end = 0);
     void setZValues(int value, int start = 0, int end = 0);
-    void setFileStructure(QString inDir, QList<QString> fList, QString outDir);
     void setChunkSize(int size);
     void setIsGrayscale(bool grayscale);
 
@@ -64,14 +66,14 @@ public:
     void createGrayscaleColorTable();
 
 private:
+    Ui::transmogrifierForm *form;
 
     void setupProgressBars();
     void updateChuckProgress(int value);
     void updateSliceProgress(int value);
     void updateOverallProgress(int value);
-
-    MainWindow *mainWindow;
-    Logger *log;
+    void populateInputFileList();
+    int getInputFilesCount();
 
     Direction direction;
     CodeVersion codeVersion;
@@ -91,7 +93,7 @@ private:
     bool isGrayscale;
     QImage::Format imageFormat;
     QString inputFromDirectory;
-    QList<QString> inputStackFiles;
+    QList<QString> inputDirectoryFiles;
     QString outputToDirectory;
     QList< QList < QList<QRgb> > > chunkCacheList; // list[{z}][{chunk number}][{y pixel data}/{x pixel data}]
     QVector<QRgb> colorTable;
