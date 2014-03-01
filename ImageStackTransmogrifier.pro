@@ -17,16 +17,9 @@ TARGET = ImageStackTransmogrifier
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    transmogrifier.cpp \
-    exception.cpp \
-    logger.cpp
+        mainwindow.cpp
 
-HEADERS  += mainwindow.h \
-    transmogrifier.h \
-    exception.h \
-    commonheader.h \
-    logger.h
+HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 

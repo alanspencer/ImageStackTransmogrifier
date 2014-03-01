@@ -9,10 +9,9 @@
 #include <QMessageBox>
 #include <QImageReader>
 #include <QDir>
-
-class Exception;
-class Logger;
-class Transmogrifier;
+#include <QThread>
+#include <QFuture>
+#include <QtConcurrent/QtConcurrent>
 
 namespace Ui {
 class MainWindow;
@@ -27,32 +26,48 @@ public:
     ~MainWindow();
     void reset();
 
-    void setupChunkProgressBar(int maxValue);
-    void setupSliceProgressBar(int maxValue);
-    void setupOverallProgressBar(int maxValue);
-    void setChunkProgress(int value);
-    void setSliceProgress(int value);
-    void setOverallProgress(int value);
-
-    void logAppend(QString message);
-    void logClear();
-
 private:
     Ui::MainWindow *ui;
-    Transmogrifier *transmogrifier;
-    Logger *log;
+
+    enum Direction
+    {
+        X0toXn,
+        XntoX0,
+        Y0toYn,
+        YntoY0
+    };
+
+    enum OutputFormat
+    {
+        BMPFormat,
+        JPEGFormat,
+        TIFFFormat,
+        PNGFormat
+    };
 
     int getCountDirectoryFiles(QDir directory);
     void getImageStackFileList(QDir directory);
     QString getAvailableFormatsStr();
+    //void transmogrifierLoadOneCopyRow();
+    void transmogrifierLoadChunkCopyRows();
+    void xLoadChunk(int xChunkStart, int xChunkEnd);
+    void runX0toXnLoop(int xChunkStart, int xChunkEnd);
+    void yLoadChunk(int yChunkStart, int yChunkEnd);
+    void runY0toYnLoop(int yChunkStart, int yChunkEnd);
+    bool isCacheEnabled();
+    const char *getOutputFormat();
+    const char* getOutputExtension();
 
     bool isGrayScale;
     QString inputFromFilename;
     QDir inputFromDirectory;
+    Direction selectedDirection;
     QString outputToDirectory;
     int sliceNumber;
     int imageWidth;
     int imageHeight;
+    int startAtNumber;
+    int endAtNumber;
     QImage::Format imageFormat;
     QString imageFormatText;
     QList<QString> imageStackFiles;
@@ -62,12 +77,15 @@ private:
     int chunkSize;
     QList< QList < QList<QRgb> > > chunkCacheList; // list[{z}][{x}/{y}][{y pixel data}/{x pixel data}]
     int currentTotalNumber;
+    int currentOutputNumber;
     bool isRunning;
     QVector<QRgb> colorTable;
     QVector<QRgb> colorTableGray;
+    OutputFormat outputFormat;
 
 private slots:
     void inputFromAction();
+    void updateStartEndNumber();
     void setDirectionX0toXn();
     void setDirectionXntoX0();
     void setDirectionY0toYn();
@@ -79,8 +97,6 @@ private slots:
     void aboutAction();
     void checkRunButton();
     void setOutputFormat(int index);
-    void saveLogAction();
-    void clearLogAction();
 
 signals:
     void dataChanged();

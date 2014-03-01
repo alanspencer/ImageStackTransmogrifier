@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>750</width>
-    <height>676</height>
+    <width>600</width>
+    <height>600</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,679 +16,573 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <widget class="QTabWidget" name="applicationTabs">
-      <property name="currentIndex">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Select Image Stack:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout" columnminimumwidth="100,0,0">
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="inputFrom">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Input From:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="inputFromButton">
+        <property name="text">
+         <string>Select Image Stack</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1" columnminimumwidth="100,0">
+      <property name="topMargin">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="xYTransmogrifierTab">
-       <attribute name="title">
-        <string>X/Y Tranmogrifier</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;1) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Select Image Stack:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="1">
-           <widget class="QLineEdit" name="inputFrom">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QToolButton" name="inputFromButton">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label">
-            <property name="text">
-             <string>Input From:</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_4" columnstretch="0,1" columnminimumwidth="100,0">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_15">
-            <property name="text">
-             <string>Supported Formats:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QLabel" name="supportedImageFormats">
-            <property name="text">
-             <string/>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Image Stack Information:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
-          <property name="leftMargin">
-           <number>0</number>
-          </property>
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QGridLayout" name="gridLayout_3">
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_3">
-              <property name="text">
-               <string>Z:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <spacer name="verticalSpacer">
-              <property name="orientation">
-               <enum>Qt::Vertical</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>20</width>
-                <height>40</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="2" column="1">
-             <widget class="QLineEdit" name="numberOfSlices">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QLineEdit" name="imageFormat">
-              <property name="readOnly">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_5">
-              <property name="text">
-               <string>X/Y:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Image Format:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <layout class="QHBoxLayout" name="horizontalLayout_2">
-              <property name="topMargin">
-               <number>0</number>
-              </property>
-              <item>
-               <widget class="QLineEdit" name="imageHeight">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>/</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLineEdit" name="imageWidth">
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </item>
-           </layout>
-          </item>
-          <item>
-           <widget class="QTableWidget" name="selectedStackFiles">
-            <property name="minimumSize">
-             <size>
-              <width>300</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
-            </property>
-            <property name="dragDropOverwriteMode">
-             <bool>false</bool>
-            </property>
-            <attribute name="horizontalHeaderStretchLastSection">
-             <bool>true</bool>
-            </attribute>
-            <attribute name="verticalHeaderStretchLastSection">
-             <bool>false</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string>Selected Stack Images</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_8">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;3) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Transmogrification Options:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_7">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_22">
-            <property name="text">
-             <string>Y Start:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QLabel" name="label_24">
-            <property name="text">
-             <string>X End:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_21">
-            <property name="text">
-             <string>X Start:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QSpinBox" name="xStartValue"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_23">
-            <property name="text">
-             <string>Z Start:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="QSpinBox" name="xEndValue"/>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLabel" name="label_25">
-            <property name="text">
-             <string>Y End:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QLabel" name="label_26">
-            <property name="text">
-             <string>Z End:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="yStartValue"/>
-          </item>
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="zStartValue"/>
-          </item>
-          <item row="1" column="3">
-           <widget class="QSpinBox" name="yEndValue"/>
-          </item>
-          <item row="2" column="3">
-           <widget class="QSpinBox" name="zEndValue"/>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,0,0,1" columnminimumwidth="100,110,110,110,0">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="3">
-           <widget class="QLabel" name="label_16">
-            <property name="text">
-             <string>Cache Chunk Size:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_9">
-            <property name="text">
-             <string>Direction:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>Algorithm:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="4">
-           <widget class="QSpinBox" name="cacheChuckSize">
-            <property name="minimum">
-             <number>10</number>
-            </property>
-            <property name="maximum">
-             <number>100</number>
-            </property>
-            <property name="singleStep">
-             <number>10</number>
-            </property>
-            <property name="value">
-             <number>50</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="2">
-           <widget class="QRadioButton" name="directionXntoX0">
-            <property name="text">
-             <string>Xn to X0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QRadioButton" name="directionX0toXn">
-            <property name="text">
-             <string>X0 to Xn</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="4">
-           <widget class="QRadioButton" name="directionY0toYn">
-            <property name="text">
-             <string>Y0 to Yn</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="3">
-           <widget class="QRadioButton" name="directionYntoY0">
-            <property name="text">
-             <string>Yn to Y0</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QComboBox" name="algorithmComboBox">
-            <item>
-             <property name="text">
-              <string>Chunked</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>Basic</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_11">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;4) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Select Output Directory for Files:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="3">
-           <widget class="QToolButton" name="outputToButton">
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QLineEdit" name="outputTo">
-            <property name="readOnly">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_12">
-            <property name="text">
-             <string>Output To:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string>Output Format:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QComboBox" name="outputFormatComboBox">
-            <property name="sizeAdjustPolicy">
-             <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
-            </property>
-            <item>
-             <property name="text">
-              <string>BMP</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>JPEG</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>PNG</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>TIFF</string>
-             </property>
-            </item>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_10">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;5) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Run:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QPushButton" name="runButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Run Image Stack Transmorgifier...</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_14">
-          <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;6) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Progress:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_5">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item row="1" column="1">
-           <widget class="QProgressBar" name="imageProgressBar">
-            <property name="maximum">
-             <number>10000</number>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-            <property name="textVisible">
-             <bool>true</bool>
-            </property>
-            <property name="format">
-             <string>%p%</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QProgressBar" name="totalProgressBar">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="value">
-             <number>0</number>
-            </property>
-            <property name="textVisible">
-             <bool>true</bool>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="invertedAppearance">
-             <bool>false</bool>
-            </property>
-            <property name="textDirection">
-             <enum>QProgressBar::TopToBottom</enum>
-            </property>
-            <property name="format">
-             <string>%p%</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_18">
-            <property name="text">
-             <string>Total Progress:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_17">
-            <property name="text">
-             <string>Current Slice:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="QProgressBar" name="chunkProgressBar">
-            <property name="value">
-             <number>0</number>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_13">
-            <property name="text">
-             <string>Chunk Chache:</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="Line" name="line">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_5">
-          <property name="topMargin">
-           <number>10</number>
-          </property>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QToolButton" name="abortButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="text">
-             <string>Abort</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="resetButton">
-            <property name="text">
-             <string>Reset</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="applicationLogTab">
-       <attribute name="title">
-        <string>Application Log</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QTextBrowser" name="logBrowser"/>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <spacer name="horizontalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QToolButton" name="saveLogButton">
-            <property name="text">
-             <string>Save...</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="clearLogButton">
-            <property name="text">
-             <string>Clear</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-       </layout>
-      </widget>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Supported Formats:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="supportedImageFormats">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_2">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;2) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Image Stack Information:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
      </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item row="1" column="1">
+         <widget class="QLineEdit" name="imageFormat">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>Width/Height:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>Image Format:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="numberOfSlices">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>Number of Slices:</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <item>
+           <widget class="QLineEdit" name="imageHeight">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>/</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="imageWidth">
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="3" column="0">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="selectedStackFiles">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="dragDropOverwriteMode">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Selected Stack Images</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;3) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Select Transmogrification Options:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_6" columnstretch="0,0,0,0,0">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item row="1" column="4">
+       <widget class="QRadioButton" name="directionYntoY0">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Yn to Y0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QRadioButton" name="directionY0toYn">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Y0 to Yn</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QCheckBox" name="useCache">
+        <property name="text">
+         <string>(recommended)</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>Use Cache:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QSpinBox" name="cacheChuckSize">
+        <property name="minimum">
+         <number>10</number>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QRadioButton" name="directionXntoX0">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string>Xn to X0</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QRadioButton" name="directionX0toXn">
+        <property name="text">
+         <string>X0 to Xn</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Direction:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Cache Chunk Size:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_21">
+        <property name="text">
+         <string>Start From:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="label_22">
+        <property name="text">
+         <string>End At:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="startAtNumber"/>
+      </item>
+      <item row="2" column="3">
+       <widget class="QSpinBox" name="endAtNumber"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;4) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Select Output Directory for&lt;/span&gt;&lt;span style=&quot; font-weight:600; font-style:italic; text-decoration: underline;&quot;/&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Files:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_2" columnminimumwidth="100,0,0,0">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item row="1" column="2">
+       <widget class="QLineEdit" name="outputTo">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Output To:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="outputToButton">
+        <property name="text">
+         <string>Select Output Directory</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string>Output Format:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QComboBox" name="outputFormat">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>BMP</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>JPEG</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PNG</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>TIFF</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;5) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Run:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="runButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Run Image Stack Transmorgifier...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_14">
+      <property name="text">
+       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;6) &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Progress:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item row="2" column="1">
+       <widget class="QProgressBar" name="imageProgressBar">
+        <property name="maximum">
+         <number>10000</number>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>true</bool>
+        </property>
+        <property name="format">
+         <string>%p%</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QProgressBar" name="totalProgressBar">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="value">
+         <number>0</number>
+        </property>
+        <property name="textVisible">
+         <bool>true</bool>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="invertedAppearance">
+         <bool>false</bool>
+        </property>
+        <property name="textDirection">
+         <enum>QProgressBar::TopToBottom</enum>
+        </property>
+        <property name="format">
+         <string>%p%</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Total Progress:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Current Slice:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QProgressBar" name="chunkProgressBar">
+        <property name="value">
+         <number>0</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Chunk Chache:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_23">
+        <property name="text">
+         <string>Status Message:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="statusMessage">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="Line" name="line">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="topMargin">
+       <number>10</number>
+      </property>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="abortButton">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>Abort</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="closeButton">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="resetButton">
+        <property name="text">
+         <string>Reset</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="aboutButton">
+        <property name="text">
+         <string>About...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>750</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionClose"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>Help</string>
-    </property>
-    <addaction name="actionAbout"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuHelp"/>
-  </widget>
-  <action name="actionClose">
-   <property name="text">
-    <string>Close</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
   <connection>
-   <sender>actionClose</sender>
-   <signal>triggered()</signal>
+   <sender>closeButton</sender>
+   <signal>clicked()</signal>
    <receiver>MainWindow</receiver>
    <slot>close()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
+     <x>471</x>
+     <y>431</y>
     </hint>
     <hint type="destinationlabel">
      <x>299</x>
-     <y>299</y>
+     <y>226</y>
     </hint>
    </hints>
   </connection>
