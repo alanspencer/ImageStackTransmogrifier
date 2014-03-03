@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/image">
+        <file alias="X0toXn">box_diagram_X0-Xn.png</file>
+        <file alias="Y0toYn">box_diagram_Y0-Yn.png</file>
+    </qresource>
+    <qresource prefix="/logo">
+        <file alias="mainLogo">logo.png</file>
+    </qresource>
+</RCC>

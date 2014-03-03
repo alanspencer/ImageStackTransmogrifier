@@ -237,25 +237,37 @@ void MainWindow::updateStartEndNumber()
 void MainWindow::setDirectionX0toXn()
 {
     selectedDirection = X0toXn;
-    updateStartEndNumber();
+    ui->boxDiagram->setPixmap(QPixmap(":/image/X0toXn"));
+    if (inputFromOK) {
+        updateStartEndNumber();
+    }
 }
 
 void MainWindow::setDirectionXntoX0()
 {
     selectedDirection = XntoX0;
-    updateStartEndNumber();
+    ui->boxDiagram->setPixmap(QPixmap(":/image/X0toXn"));
+    if (inputFromOK) {
+        updateStartEndNumber();
+    }
 }
 
 void MainWindow::setDirectionY0toYn()
 {
     selectedDirection = Y0toYn;
-    updateStartEndNumber();
+    ui->boxDiagram->setPixmap(QPixmap(":/image/Y0toYn"));
+    if (inputFromOK) {
+        updateStartEndNumber();
+    }
 }
 
 void MainWindow::setDirectionYntoY0()
 {
     selectedDirection = YntoY0;
-    updateStartEndNumber();
+    ui->boxDiagram->setPixmap(QPixmap(":/image/Y0toYn"));
+    if (inputFromOK) {
+        updateStartEndNumber();
+    }
 }
 
 void MainWindow::setOutputFormat(int index)
